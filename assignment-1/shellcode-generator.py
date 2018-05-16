@@ -13,7 +13,7 @@ os.system('clear')
 
 if len(sys.argv) != 2:
     
-    print "[x] usage: ./wrapper PortNumber (ex: 4444)"
+    print "[x] usage: ./shellcode-generator.py PortNumber (ex: 4444)"
     sys.exit(0)
 
 #setting port number

