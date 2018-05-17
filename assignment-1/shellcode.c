@@ -9,7 +9,7 @@
 //compile with: gcc shellcode.c -o shellcode -fno-stack-protector -z execstack
 
 unsigned char code[] = \
-"REPLACE-ME-WITH-YOUR-SHELLCODE";
+"REPLACE WITH GENERATED shellcode!!!!!!!!!!!!!!oneoneonetwo";
 
 
 main()
