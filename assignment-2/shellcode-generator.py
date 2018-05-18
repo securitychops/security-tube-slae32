@@ -21,11 +21,7 @@ content = [x.strip() for x in content]
 
 insertAt = content.index(";ip-address-before-here")
 
-print insertAt
-
 stuff = sys.argv[2].split('.')
-
-print content
 
 offset = 0
 
@@ -36,8 +32,10 @@ for x in stuff[::-1]:
         insertAt += 1
     offset += 1
 
-theUUID = uuid.uuid4()
+uuidFilePath = os.getcwd() + str(uuid.uuid4())
 
+for x in content:
+   print x
 
+print uuidFilePath
 
-print content
