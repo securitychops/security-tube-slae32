@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# Student ID  : SLAE-1250
+# Student Name: Jonathan "Chops" Crosby
+# Assignment 2: Reverse Shell TCP (Linux/x86) Python Helper
+
 import tempfile
 import shutil
 import os
