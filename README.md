@@ -2,8 +2,6 @@
 
 Student ID: SLAE-1250
 
-Assignment Two
-
 This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:
 http://www.securitytube-training.com/online-courses/securitytube-linux-assembly-expert/index.html
 
