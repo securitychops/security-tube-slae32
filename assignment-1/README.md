@@ -1,3 +1,5 @@
+https://securitychops.com/2018/05/16/slae-assignment-1-shell-bind-tcp-shellcode.html
+
 1. Run ./shellcode-generator.py PortNumber
     - (ie ./shellcode-generator.py 4444)
 2. Paste shellcode into shellcode.c
