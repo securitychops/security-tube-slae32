@@ -2,7 +2,7 @@
 
 Student ID: SLAE-1250
 
-This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:
+This repo has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:
 http://www.securitytube-training.com/online-courses/securitytube-linux-assembly-expert/index.html
 
 All blog posts can be found at https://securitychops.com
