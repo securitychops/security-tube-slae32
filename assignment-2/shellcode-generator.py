@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# Student ID  : SLAE-1250
+# Student Name: Jonathan "Chops" Crosby
+# Assignment 2: Reverse Shell TCP (Linux/x86) Python Helper
+
 import tempfile
 import shutil
 import os
@@ -9,7 +13,7 @@ import uuid
 
 if len(sys.argv) != 3:
    
-    print "[x] usage: ./poc.py port ipaddress (ex. 4444 10.0.7.17)"
+    print "[x] usage: ./shellcode-generator.py port ipaddress (ex. 4444 10.0.7.17)"
     sys.exit(0)
 
 tempDir = tempfile.mkdtemp()

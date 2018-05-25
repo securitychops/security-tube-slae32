@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
 			     //IPPROTO_IP  - http://man7.org/linux/man-pages/man7/ip.7.html
 	socketid = socket(AF_INET,SOCK_STREAM,IPPROTO_IP);
 
+	//http://man7.org/linux/man-pages/man2/connect.2.html
 	connect(socketid,(struct sockaddr *)&serverAddress, sizeof(serverAddress));
 
 	//we now need to duplicate the file descriptors from standard
