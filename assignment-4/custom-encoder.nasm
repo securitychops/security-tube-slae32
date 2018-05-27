@@ -1,6 +1,6 @@
 ; Student ID   : SLAE-1250
 ; Student Name : Jonathan "Chops" Crosby
-; Assignment 3 : Custom Encoder (Linux/x86) Assembly
+; Assignment 4 : Custom Encoder (Linux/x86) Assembly
 ; File Name    : custom-encoder.nasm
 
 global _start
