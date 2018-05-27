@@ -9,7 +9,7 @@ section .text
 
 _start:
 
-        jmp short call_shellcode ; using the jump, pop and call method to get into our shellcode
+        jmp short call_shellcode ; using the jump, call and pop method to get into our shellcode
 
 decoder:
         pop esi                  ; get the address of EncodedShellcode into esi
