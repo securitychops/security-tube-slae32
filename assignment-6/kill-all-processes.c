@@ -1,7 +1,7 @@
 // Student ID     : SLAE-1250
 // Student Name   : Jonathan "Chops" Crosby
 // Assignment 6.1 : Shell Code Test File
-// File Name      : shellcode.c
+// File Name      : kill-all-processes.c
 
 #include<stdio.h>
 #include<string.h>
