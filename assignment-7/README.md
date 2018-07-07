@@ -1,11 +1,11 @@
-To compile crypter:
- - gcc crypter.c aes.c -o crypter
+1. Compile crypter:
+     - gcc crypter.c aes.c -o crypter
  
-Take shellcode output and insert it into decrypter.c
+2. Take shellcode output and insert it into decrypter.c
 
-To compile decrypter:
- - gcc decrypter.c aes.c -o decrypter -fno-stack-protector -z execstack
+3. Compile decrypter:
+     - gcc decrypter.c aes.c -o decrypter -fno-stack-protector -z execstack
  
- Run ./decrypter
+4. Run ./decrypter
  
- Bask in the glory of the /bin/sh prompt!
+5. Bask in the glory of the /bin/sh prompt!
